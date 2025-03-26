@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: microservice-a
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+server:
+  port: 8080
