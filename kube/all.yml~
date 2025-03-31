@@ -1,0 +1,344 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul
+spec:
+  selector:
+    app: consul
+  ports:
+    - name: http
+      port: 8500
+      targetPort: 8500
+    - name: dns
+      port: 8600
+      targetPort: 8600
+      protocol: UDP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consul
+  labels:
+    app: consul
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consul
+  template:
+    metadata:
+      labels:
+        app: consul
+    spec:
+      containers:
+        - name: consul
+          image: hashicorp/consul:1.20
+          ports:
+            - containerPort: 8500
+          volumeMounts:
+            - name: consul-data
+              mountPath: /consul/data
+          args:
+            - "agent"
+            - "-server"
+            - "-bootstrap-expect=1"
+            - "-ui"
+            - "-client=0.0.0.0"
+          readinessProbe:
+            httpGet:
+              path: /v1/status/leader
+              port: 8500
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: consul-data
+          emptyDir: {}
+---
+  @apiVersion: v1
+   kind: Service
+   metadata:
+     name: gateway
+     namespace: dc1
+   spec:
+     selector:
+       app: gateway
+     ports:
+       - name: http
+         port: 8080
+         targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: dc1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      initContainers:
+        - name: wait-for-consul
+          image: busybox
+          command: ['sh', '-c', 'until nc -z consul.default.svc.cluster.local 8500; do sleep 5; done']
+      containers:
+        - name: gateway
+          image: spring-cloud-gateway-and-consul-multi-zone-gateway:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CLOUD_CONSUL_HOST
+              value: "consul.default.svc.cluster.local"
+            - name: SPRING_CLOUD_CONSUL_PORT
+              value: "8500"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER
+              value: "true"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
+              value: "dc1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: dc2
+spec:
+  selector:
+    app: gateway
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: dc2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      initContainers:
+        - name: wait-for-consul
+          image: busybox
+          command: ['sh', '-c', 'until nc -z consul.default.svc.cluster.local 8500; do sleep 5; done']
+      containers:
+        - name: gateway
+          image: spring-cloud-gateway-and-consul-multi-zone-gateway:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CLOUD_CONSUL_HOST
+              value: "consul.default.svc.cluster.local"
+            - name: SPRING_CLOUD_CONSUL_PORT
+              value: "8500"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER
+              value: "true"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
+              value: "dc2"
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-a
+  namespace: dc1
+spec:
+  selector:
+    app: microservice-a
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-a
+  namespace: dc1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-a
+  template:
+    metadata:
+      labels:
+        app: microservice-a
+    spec:
+      initContainers:
+        - name: wait-for-consul
+          image: busybox
+          command: ['sh', '-c', 'until nc -z consul.default.svc.cluster.local 8500; do sleep 5; done']
+      containers:
+        - name: microservice-a
+          image: spring-cloud-gateway-and-consul-multi-zone-microservice-a:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CLOUD_CONSUL_HOST
+              value: "consul.default.svc.cluster.local"
+            - name: SPRING_CLOUD_CONSUL_PORT
+              value: "8500"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER
+              value: "true"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
+              value: "dc1"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-a
+  namespace: dc2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-a
+  template:
+    metadata:
+      labels:
+        app: microservice-a
+    spec:
+      initContainers:
+        - name: wait-for-consul
+          image: busybox
+          command: ['sh', '-c', 'until nc -z consul.default.svc.cluster.local 8500; do sleep 5; done']
+      containers:
+        - name: microservice-a
+          image: spring-cloud-gateway-and-consul-multi-zone-microservice-a:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CLOUD_CONSUL_HOST
+              value: "consul.default.svc.cluster.local"
+            - name: SPRING_CLOUD_CONSUL_PORT
+              value: "8500"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER
+              value: "true"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
+              value: "dc2"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-a
+  namespace: dc2
+spec:
+  selector:
+    app: microservice-a
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-b
+  namespace: dc1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-b
+  template:
+    metadata:
+      labels:
+        app: microservice-b
+    spec:
+      initContainers:
+        - name: wait-for-consul
+          image: busybox
+          command: ['sh', '-c', 'until nc -z consul.default.svc.cluster.local 8500; do sleep 5; done']
+      containers:
+        - name: microservice-b
+          image: spring-cloud-gateway-and-consul-multi-zone-microservice-b:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CLOUD_CONSUL_HOST
+              value: "consul.default.svc.cluster.local"
+            - name: SPRING_CLOUD_CONSUL_PORT
+              value: "8500"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER
+              value: "true"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
+              value: "dc1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-b
+  namespace: dc1
+spec:
+  selector:
+    app: microservice-b
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-b
+  namespace: dc2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-b
+  template:
+    metadata:
+      labels:
+        app: microservice-b
+    spec:
+      initContainers:
+        - name: wait-for-consul
+          image: busybox
+          command: ['sh', '-c', 'until nc -z consul.default.svc.cluster.local 8500; do sleep 5; done']
+      containers:
+        - name: microservice-b
+          image: spring-cloud-gateway-and-consul-multi-zone-microservice-b:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CLOUD_CONSUL_HOST
+              value: "consul.default.svc.cluster.local"
+            - name: SPRING_CLOUD_CONSUL_PORT
+              value: "8500"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER
+              value: "true"
+            - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
+              value: "dc2"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-b
+  namespace: dc2
+spec:
+  selector:
+    app: microservice-b
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

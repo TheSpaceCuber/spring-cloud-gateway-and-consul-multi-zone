@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instance-zone: ${SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE}
+        hostname: gateway
+        health-check-path: /actuator/health
+        prefer-ip-address: false
+        healthCheckInterval: 10s
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: microservice-a
+          uri: lb://microservice-a
+          predicates:
+            - Path=/**

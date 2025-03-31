@@ -1,13 +1,13 @@
 spring:
   application:
-    name: microservice-a
+    name: microservice-b
   cloud:
     consul:
       host: localhost
       port: 8500
       discovery:
         instance-zone: ${SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE}
-        hostname: microservice-a
+        hostname: microservice-b
         health-check-path: /actuator/health
         prefer-ip-address: false
         healthCheckInterval: 10s
