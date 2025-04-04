@@ -1,13 +1,16 @@
+server:
+  port: 8082
+  error:
+    include-exception: true
 spring:
   application:
     name: microservice-b
-  cloud:
-    consul:
-      host: localhost
-      port: 8500
-      discovery:
-        instance-zone: ${SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE}
-        hostname: microservice-b
-        health-check-path: /actuator/health
-        prefer-ip-address: false
-        healthCheckInterval: 10s
+feign:
+  tsf:
+    enabled: true
+tsf_consul_port: 8500
+tsf_application_id: microservice-b-id
+tsf_group_id: group-a
+tsf:
+  swagger:
+    enabled: false

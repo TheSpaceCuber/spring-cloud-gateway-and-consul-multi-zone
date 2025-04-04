@@ -45,3 +45,5 @@ spec:
               value: "true"
             - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
               value: "dc2"
+            - name: SERVER_PORT
+              value: "8080"

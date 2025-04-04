@@ -1,13 +1,23 @@
+server:
+  port: 8081
+  error:
+    include-exception: true
 spring:
   application:
     name: microservice-a
   cloud:
     consul:
-      host: localhost
-      port: 8500
       discovery:
-        instance-zone: ${SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE}
-        hostname: microservice-a
-        health-check-path: /actuator/health
-        prefer-ip-address: false
-        healthCheckInterval: 10s
+        register: true
+        instance-id: ${spring.application.name}-${spring.cloud.client.hostname}-${random.value}
+        service-name: microservice-a
+
+feign:
+  tsf:
+    enabled: true
+tsf_consul_port: 8500
+tsf_application_id: microservice-a-id
+tsf_group_id: group-a
+tsf:
+  swagger:
+    enabled: false

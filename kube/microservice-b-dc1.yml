@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice-b
-  namespace: dc1
+#  namespace: dc1
 spec:
   selector:
     app: microservice-b
@@ -15,7 +15,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice-b
-  namespace: dc1
+#  namespace: dc1
 spec:
   replicas: 1
   selector:
@@ -45,3 +45,5 @@ spec:
               value: "true"
             - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
               value: "dc1"
+            - name: SERVER_PORT
+              value: "8080"

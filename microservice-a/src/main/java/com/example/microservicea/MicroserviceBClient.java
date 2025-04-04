@@ -3,8 +3,8 @@ package com.example.microservicea;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(name = "microservice-b")
+@FeignClient(name = "microservice-b:8082")
 public interface MicroserviceBClient {
-    @GetMapping("/hello")
+    @GetMapping("/")
     public String hello();
 }
