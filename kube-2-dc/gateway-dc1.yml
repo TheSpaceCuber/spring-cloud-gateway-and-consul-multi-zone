@@ -37,11 +37,13 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: SPRING_CLOUD_CONSUL_HOST
-              value: "consul.default.svc.cluster.local"
-            - name: SPRING_CLOUD_CONSUL_PORT
-              value: "8500"
-            - name: SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER
-              value: "true"
-            - name: SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE
-              value: "dc1"
+            - name: SERVER_PORT
+              value: "8080"
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -Dtsf_consul_ip=consul.default.svc.cluster.local
+                -Dtsf_consul_port=8500
+                -Dtsf_application_id=gateway
+                -Dtsf_group_id=group-dc1
+                -Dtsf_zone=dc1
+                -Dtsf_registry_port=8080

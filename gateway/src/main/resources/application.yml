@@ -1,22 +1,45 @@
+server:
+  port: 8080
+  error:
+    include-exception: true
 spring:
   application:
     name: gateway
   cloud:
-    consul:
-      host: localhost
-      port: 8500
-      discovery:
-        instance-zone: ${SPRING_CLOUD_CONSUL_DISCOVERY_INSTANCE_ZONE}
-        hostname: gateway
-        health-check-path: /actuator/health
-        prefer-ip-address: false
-        healthCheckInterval: 10s
     gateway:
-      discovery:
-        locator:
-          enabled: true
       routes:
         - id: microservice-a
           uri: lb://microservice-a
           predicates:
             - Path=/**
+      httpclient:
+        # The connect timeout in millis, the default is 45s.
+        connectTimeout: 45000
+        responseTimeout: 10000
+        pool:
+          max-idle-time: 5000
+          acquire-timeout: 45000
+    consul:
+      enabled: true
+      scheme: HTTP
+      discovery:
+        instance-id: ${spring.application.name}-${spring.cloud.client.hostname}-${random.value}
+        service-name: gateway
+        register: true
+tsf :
+  gateway :
+    opensource-mode : true
+
+tsf_consul_ip: "localhost"
+tsf_consul_port: "8500"
+tsf_application_id: ""
+tsf_group_id: ""
+tsf_zone: ""
+tsf_registry_port: 8080
+
+logging:
+  level:
+    root: INFO
+  # tsf spring cloud 2021 的 pattern 需要配置如下，否则日志配置项解析不了
+  pattern:
+    level: "%-5level [${spring.application.name},%mdc{trace_id},%mdc{span_id},]"
