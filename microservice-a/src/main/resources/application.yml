@@ -26,3 +26,4 @@ tsf_registry_port: 8080
 tsf:
   swagger:
     enabled: false
+    
