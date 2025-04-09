@@ -16,7 +16,7 @@ public class Controller {
 
     @GetMapping("/")
     public String hello() {
-        LOGGER.info("/hello endpoint for Microservice A: Hello from Microservice A");
+        LOGGER.info("/ endpoint for Microservice A: Hello from Microservice A");
         return "Microservice A: Hello from Microservice A";
     }
 

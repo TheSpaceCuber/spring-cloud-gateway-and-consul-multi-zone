@@ -16,6 +16,7 @@ services:
       SPRING_CLOUD_CONSUL_HOST: consul
       SPRING_CLOUD_CONSUL_PORT: 8500
       SPRING_APPLICATION_NAME: gateway
+      SERVER_PORT: 8080
     depends_on:
       - consul
 
@@ -29,6 +30,8 @@ services:
       SPRING_CLOUD_CONSUL_PORT: 8500
       SPRING_APPLICATION_NAME: microservice-a
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_CONSUL: OFF
+      MICROSERVICE_B_URL: http://microservice-b
+      SERVER_PORT: 8080
     depends_on:
       - consul
 
@@ -42,5 +45,6 @@ services:
       SPRING_CLOUD_CONSUL_PORT: 8500
       SPRING_APPLICATION_NAME: microservice-b
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_CONSUL: OFF
+      SERVER_PORT: 8080
     depends_on:
       - consul

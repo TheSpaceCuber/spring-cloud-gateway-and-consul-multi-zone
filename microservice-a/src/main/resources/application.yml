@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   application:
     name: microservice-a
@@ -11,3 +13,6 @@ spring:
         health-check-path: /actuator/health
         prefer-ip-address: false
         healthCheckInterval: 10s
+
+microservice-b:
+  url: "localhost:8082" # needs to change depending on platform

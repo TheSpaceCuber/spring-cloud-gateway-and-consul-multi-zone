@@ -5,6 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(name = "microservice-b")
 public interface MicroserviceBClient {
-    @GetMapping("/hello")
+    @GetMapping("/")
     public String hello();
 }
