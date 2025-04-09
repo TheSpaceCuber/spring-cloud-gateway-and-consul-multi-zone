@@ -30,6 +30,12 @@ tsf :
   gateway :
     opensource-mode : true
 
+tsf_consul_ip: "localhost"
+tsf_consul_port: "8500"
+tsf_application_id: ""
+tsf_group_id: ""
+tsf_zone: ""
+tsf_registry_port: 8080
 
 logging:
   level:

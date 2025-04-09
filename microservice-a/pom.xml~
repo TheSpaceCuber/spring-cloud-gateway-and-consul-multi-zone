@@ -8,10 +8,10 @@
 		<version>1.46.10-SpringCloud2021-RELEASE</version>
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>microservice-b</artifactId>
+	<artifactId>microservice-a</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>microservice-b</name>
-	<description>microservice-b</description>
+	<name>microservice-a</name>
+	<description>microservice-a</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -30,8 +30,8 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>com.tencent.tsf </groupId>
-			<artifactId>spring-cloud-tsf-starter</artifactId>
+			<groupId> com.tencent.tsf </groupId>
+			<artifactId> spring-cloud-tsf-starter </artifactId>
 			<version>1.46.10-SpringCloud2021-RELEASE</version>
 		</dependency>
 		<dependency>
@@ -39,8 +39,16 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-consul-discovery</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -54,6 +62,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
