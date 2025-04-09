@@ -3,8 +3,32 @@
 ## Prerequisites
 - Docker Desktop with Kubernetes enabled
 - Java 17
+- Maven, settings.xml configured for Tencent dependencies as per [here](https://cloud.tencent.com/document/product/649/20231)
 
-## Create JAR files and Docker images
+## Create JAR files and Docker images for each module
+```bash
+mvn clean package -DskipTests -f microservice-a/pom.xml
+mvn clean package -DskipTests -f microservice-b/pom.xml
+mvn clean package -DskipTests -f gateway/pom.xml
+
+docker-compose build --no-cache
+```
+
+## Running services without Kubernetes or Docker
+You need consul running on localhost:8500. The easiest way is with docker.
+
+```bash
+docker run -d --name=consul-dev -p 8500:8500 hashicorp/consul agent -dev -client 0.0.0.0
+```
+You can now start each service with IntelliJ IDEA or your own IDE / CLI.
+
+
+## Deployment with Docker Compose
+*This is not patched yet*
+```bash
+docker-compose up -d
+```
+
 
 ## Deployment with Kubernetes
 
