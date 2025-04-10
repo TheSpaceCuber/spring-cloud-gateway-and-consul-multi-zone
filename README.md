@@ -5,6 +5,9 @@
 - Java 17
 - Maven, settings.xml configured for Tencent dependencies as per [here](https://cloud.tencent.com/document/product/649/20231)
 
+## Context
+![Image](https://github.com/user-attachments/assets/61f595de-b2ab-47c3-85f5-96204b1f66ee)
+
 ## Create JAR files and Docker images for each module
 ```bash
 mvn clean package -DskipTests -f microservice-a/pom.xml
@@ -14,7 +17,7 @@ mvn clean package -DskipTests -f gateway/pom.xml
 docker-compose build --no-cache
 ```
 
-## Running services without Kubernetes or Docker
+## Option 1: Running services without Kubernetes or Docker
 You need consul running on localhost:8500. The easiest way is with docker.
 
 ```bash
@@ -23,7 +26,7 @@ docker run -d --name=consul-dev -p 8500:8500 hashicorp/consul agent -dev -client
 You can now start each service with IntelliJ IDEA or your own IDE / CLI.
 
 
-## Deployment with Docker Compose
+## Option 2: Deployment with Docker Compose
 
 ```bash
 docker-compose up -d
@@ -33,7 +36,7 @@ Open consul at `localhost:8500`.
 `localhost:8080/getHelloFromB` should return `Microservice A: Microservice B: Hello from Microservice B`.
 Meaning that traffic went from Gateway -> Microservice A -> Microservice B and back.
 
-## Deployment with Kubernetes
+## Option 3: Deployment with Kubernetes
 
 Create 2 namespaces to simulate 2 datacenters: dc1 and dc2
 ```bash
@@ -56,16 +59,16 @@ kubectl port-forward svc/consul 8500:8500 -n default
 ```
 You should see all health checks pass in consul dashboard.
 
-## Testing
+### Testing
 
-### Use nginx pod to test http calls
+#### Use nginx pod to test http calls
 ```bash
 # create nginx pod and ssh into it
 kubectl run nginx --image=nginx
 kubectl exec pod/nginx -it -- /bin/bash
 ```
 
-### Single namespace
+#### Single namespace
 ```bash
 # returns "Microservice A: Hello from Microservice A"
 curl http://gateway:8080/ 
@@ -74,7 +77,7 @@ curl http://gateway:8080/
 curl http://gateway:8080/getHelloFromB 
 ```
 
-### Double namespace (dc1 and dc2)
+#### Double namespace (dc1 and dc2)
 ```bash
 # returns "Microservice B: Hello from Microservice B"
 curl http://gateway.dc1.svc.cluster.local:8080/getHelloFromB 
