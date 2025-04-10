@@ -8,6 +8,29 @@
 ## Context
 ![Image](https://github.com/user-attachments/assets/61f595de-b2ab-47c3-85f5-96204b1f66ee)
 
+Gateway directs traffic to microservice A.
+### Microservice A
+```java
+@GetMapping("/")
+public String hello() {
+    return "Microservice A: Hello from Microservice A";
+}
+
+@GetMapping("/getHelloFromB")
+public String sendToB() {
+    return "Microservice A: " + bClient.hello();
+}
+```
+Microservice A then makes a call to B.
+### Microservice B
+```java
+@GetMapping("/")
+public String hello() {
+    return "Microservice B: Hello from Microservice B";
+}
+```
+
+
 ## Create JAR files and Docker images for each module
 ```bash
 mvn clean package -DskipTests -f microservice-a/pom.xml
