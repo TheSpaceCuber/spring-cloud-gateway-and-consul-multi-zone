@@ -13,10 +13,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_CLOUD_CONSUL_HOST: consul
-      SPRING_CLOUD_CONSUL_PORT: 8500
-      SPRING_APPLICATION_NAME: gateway
       SERVER_PORT: 8080
+      JAVA_TOOL_OPTIONS: -Dtsf_consul_ip=consul -Dtsf_consul_port=8500 -Dtsf_application_id=gateway -Dtsf_group_id=group-dc1 -Dtsf_zone=dc1 -Dtsf_registry_port=8080
     depends_on:
       - consul
 
@@ -26,12 +24,8 @@ services:
     ports:
       - "8081:8080"
     environment:
-      SPRING_CLOUD_CONSUL_HOST: consul
-      SPRING_CLOUD_CONSUL_PORT: 8500
-      SPRING_APPLICATION_NAME: microservice-a
-      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_CONSUL: OFF
-      MICROSERVICE_B_URL: http://microservice-b
       SERVER_PORT: 8080
+      JAVA_TOOL_OPTIONS: -Dtsf_consul_ip=consul -Dtsf_consul_port=8500 -Dtsf_application_id=microservice-a -Dtsf_group_id=group-dc1 -Dtsf_zone=dc1 -Dtsf_registry_port=8080
     depends_on:
       - consul
 
@@ -41,10 +35,7 @@ services:
     ports:
       - "8082:8080"
     environment:
-      SPRING_CLOUD_CONSUL_HOST: consul
-      SPRING_CLOUD_CONSUL_PORT: 8500
-      SPRING_APPLICATION_NAME: microservice-b
-      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_CONSUL: OFF
       SERVER_PORT: 8080
+      JAVA_TOOL_OPTIONS: -Dtsf_consul_ip=consul -Dtsf_consul_port=8500 -Dtsf_application_id=microservice-b -Dtsf_group_id=group-dc1 -Dtsf_zone=dc1 -Dtsf_registry_port=8080
     depends_on:
       - consul

@@ -24,11 +24,14 @@ You can now start each service with IntelliJ IDEA or your own IDE / CLI.
 
 
 ## Deployment with Docker Compose
-*This is not patched yet*
+
 ```bash
 docker-compose up -d
 ```
 
+Open consul at `localhost:8500`.
+`localhost:8080/getHelloFromB` should return `Microservice A: Microservice B: Hello from Microservice B`.
+Meaning that traffic went from Gateway -> Microservice A -> Microservice B and back.
 
 ## Deployment with Kubernetes
 
