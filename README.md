@@ -70,7 +70,7 @@ kubectl exec pod/nginx -it -- /bin/bash
 # returns "Microservice A: Hello from Microservice A"
 curl http://gateway:8080/ 
 
-# "returns Microservice B: Hello from Microservice B"
+# "returns Microservice A: Microservice B: Hello from Microservice B"
 curl http://gateway:8080/getHelloFromB 
 ```
 
@@ -84,7 +84,7 @@ kubectl scale deployment/microservice-a --replicas=0 -n dc1
 
 # at this point, you may get server error as the service is temporarily unavailable
 # but in a few seconds the requests will be sent to microservice-a in dc2
-# returns "Microservice B: Hello from Microservice B"
+# returns "Microservice A: Microservice B: Hello from Microservice B"
 curl http://gateway.dc1.svc.cluster.local:8080/getHelloFromB 
 ```
 
