@@ -126,6 +126,10 @@ kubectl delete namespace dc2
 ```
 
 ## Details
+### Spring cloud gateway and consul dependencies
+Do not use non tencent dependencies for spring cloud gateway and spring cloud consul.
+
+### Connecting microservices to consul
 For microservices to be able to connect to consul, we need to use `consul.default.svc.cluster.local` instead of 
 just `consul` since consul is running in default namespace and not dc1 or dc2.
 
